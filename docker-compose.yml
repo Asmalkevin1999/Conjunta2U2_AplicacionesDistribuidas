@@ -1,0 +1,211 @@
+version: '3.8'
+
+networks:
+  api-gateway-network:
+    driver: bridge
+
+services:
+  # ─── Bases de datos ───────────────────────────────────
+  usuarios-db:
+    image: postgres:16
+    container_name: usuarios_db
+    restart: always
+    environment:
+      POSTGRES_DB: usuarios_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - usuarios-db-data:/var/lib/postgresql/data
+    networks:
+      - api-gateway-network
+
+  vehiculos-db:
+    image: postgres:15
+    container_name: postgres_vehiculos
+    restart: always
+    environment:
+      POSTGRES_USER: kevin
+      POSTGRES_PASSWORD: espe123
+      POSTGRES_DB: vehiculos_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kevin"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - vehiculos-db-data:/var/lib/postgresql/data
+    networks:
+      - api-gateway-network
+
+  zonas-db:
+    image: postgres:15
+    container_name: database-zonas
+    restart: always
+    environment:
+      POSTGRES_USER: kfamaguana
+      POSTGRES_PASSWORD: espe123
+      POSTGRES_DB: zonasDB
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kfamaguana"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - zonas-db-data:/var/lib/postgresql/data
+    networks:
+      - api-gateway-network
+
+  # ─── Microservicios ───────────────────────────────────
+  usuarios:
+    build:
+      context: ./usuarios
+    container_name: usuarios_api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DB_HOST: usuarios-db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: usuarios_db
+      DB_SYNCHRONIZE: "true"
+    depends_on:
+      usuarios-db:
+        condition: service_healthy
+    networks:
+      - api-gateway-network
+
+  vehiculos:
+    build:
+      context: ./vehiculos
+    container_name: vehiculos_api
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      DB_HOST: vehiculos-db
+      DB_PORT: 5432
+      DB_USUARIO: kevin
+      DB_CONTRASENA: espe123
+      DB_NOMBRE: vehiculos_db
+    depends_on:
+      vehiculos-db:
+        condition: service_healthy
+    networks:
+      - api-gateway-network
+
+  asignaciones-db:
+    image: postgres:16
+    container_name: asignaciones_db
+    restart: always
+    environment:
+      POSTGRES_DB: asignaciones_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - asignaciones-db-data:/var/lib/postgresql/data
+    networks:
+      - api-gateway-network
+
+  asignaciones:
+    build:
+      context: ./asignaciones
+    container_name: asignaciones_api
+    restart: always
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+      DB_HOST: asignaciones-db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: asignaciones_db
+      DB_SYNCHRONIZE: "true"
+    depends_on:
+      asignaciones-db:
+        condition: service_healthy
+    networks:
+      - api-gateway-network
+
+  zonas:
+    build:
+      context: ./zonas
+    container_name: zonas_api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: zonas-db
+      DB_PORT: 5432
+      DB_NAME: zonasDB
+      DB_USER: kfamaguana
+      DB_PASS: espe123
+    depends_on:
+      zonas-db:
+        condition: service_healthy
+    networks:
+      - api-gateway-network
+
+  # ─── API Docs (Swagger unificado) ─────────────────────
+  api-docs:
+    build:
+      context: ./api-docs
+    container_name: api_docs
+    restart: always
+    ports:
+      - "3100:3100"
+    environment:
+      PORT: 3100
+    depends_on:
+      - usuarios
+      - vehiculos
+      - zonas
+    networks:
+      - api-gateway-network
+
+  # ─── Kong API Gateway ─────────────────────────────────
+  kong:
+    image: kong:3.8
+    container_name: kong_gateway
+    restart: always
+    ports:
+      - "8000:8000"   # Proxy HTTP
+      - "8443:8443"   # Proxy HTTPS
+      - "8001:8001"   # Admin API
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: "0.0.0.0:8001"
+    volumes:
+      - ./kong.yml:/usr/local/kong/declarative/kong.yml
+    depends_on:
+      - usuarios
+      - vehiculos
+      - zonas
+      - api-docs
+    networks:
+      - api-gateway-network
+
+volumes:
+  usuarios-db-data:
+  vehiculos-db-data:
+  asignaciones-db-data:
+  zonas-db-data:
