@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: zonas
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5434}/${DB_NAME:zonasDB}
+    username: ${DB_USER:kfamaguana}
+    password: ${DB_PASS:espe123}
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      # 'update' actualiza el esquema automáticamente, 'create-drop' lo borra al apagar, 'validate' solo verifica, 'none' no hace nada.
+      ddl-auto: update 
+    show-sql: true # Muestra las consultas SQL en la consola (útil para desarrollo)
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true # Formatea el SQL en la consola para que sea legibl

@@ -1,0 +1,187 @@
+{
+	"info": {
+		"name": "Vehículos API",
+		"description": "Colección de endpoints para la gestión de vehículos (Auto, Moto, Camioneta) con clasificación (Electrico, Hibrido, Gasolina, Diesel)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		},
+		{
+			"key": "id",
+			"value": ""
+		}
+	],
+	"item": [
+		{
+			"name": "Create Auto",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"tipo\": \"auto\",\n  \"datos\": {\n    \"placa\": \"ABC-1234\",\n    \"marca\": \"Toyota\",\n    \"modelo\": \"Corolla\",\n    \"color\": \"Rojo\",\n    \"anio\": 2022,\n    \"numeroPuertas\": 4,\n    \"capacidadMaletero\": 500,\n    \"clasificacion\": \"Electrico\"\n  }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/vehiculos",
+					"host": ["{{baseUrl}}"],
+					"path": ["vehiculos"]
+				}
+			}
+		},
+		{
+			"name": "Create Moto",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"tipo\": \"moto\",\n  \"datos\": {\n    \"placa\": \"AB-123C\",\n    \"marca\": \"Yamaha\",\n    \"modelo\": \"MT-07\",\n    \"color\": \"Negro\",\n    \"anio\": 2023,\n    \"tipoMoto\": \"Deportivo\",\n    \"clasificacion\": \"Gasolina\"\n  }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/vehiculos",
+					"host": ["{{baseUrl}}"],
+					"path": ["vehiculos"]
+				}
+			}
+		},
+		{
+			"name": "Create Camioneta",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"tipo\": \"camioneta\",\n  \"datos\": {\n    \"placa\": \"DEF-5678\",\n    \"marca\": \"Ford\",\n    \"modelo\": \"Ranger\",\n    \"color\": \"Blanco\",\n    \"anio\": 2024,\n    \"cabina\": \"Doble\",\n    \"capacidadCarga\": 1500,\n    \"clasificacion\": \"Diesel\"\n  }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/vehiculos",
+					"host": ["{{baseUrl}}"],
+					"path": ["vehiculos"]
+				}
+			}
+		},
+		{
+			"name": "Get All Vehiculos",
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "{{baseUrl}}/vehiculos",
+					"host": ["{{baseUrl}}"],
+					"path": ["vehiculos"]
+				}
+			}
+		},
+		{
+			"name": "Get Autos",
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "{{baseUrl}}/vehiculos?tipo=auto",
+					"host": ["{{baseUrl}}"],
+					"path": ["vehiculos"],
+					"query": [
+						{
+							"key": "tipo",
+							"value": "auto"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "Get Motos",
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "{{baseUrl}}/vehiculos?tipo=moto",
+					"host": ["{{baseUrl}}"],
+					"path": ["vehiculos"],
+					"query": [
+						{
+							"key": "tipo",
+							"value": "moto"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "Get Camionetas",
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "{{baseUrl}}/vehiculos?tipo=camioneta",
+					"host": ["{{baseUrl}}"],
+					"path": ["vehiculos"],
+					"query": [
+						{
+							"key": "tipo",
+							"value": "camioneta"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "Get Vehiculo By ID",
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "{{baseUrl}}/vehiculos/{{id}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["vehiculos", "{{id}}"]
+				}
+			}
+		},
+		{
+			"name": "Update Vehiculo",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"color\": \"Azul\",\n  \"anio\": 2025,\n  \"clasificacion\": \"Hibrido\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/vehiculos/{{id}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["vehiculos", "{{id}}"]
+				}
+			}
+		},
+		{
+			"name": "Delete Vehiculo",
+			"request": {
+				"method": "DELETE",
+				"url": {
+					"raw": "{{baseUrl}}/vehiculos/{{id}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["vehiculos", "{{id}}"]
+				}
+			}
+		}
+	]
+}

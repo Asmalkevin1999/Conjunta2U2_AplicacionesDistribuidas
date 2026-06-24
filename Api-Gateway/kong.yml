@@ -1,0 +1,52 @@
+_format_version: "3.0"
+
+services:
+  - name: usuarios-service
+    host: usuarios
+    port: 3000
+    protocol: http
+    routes:
+      - name: usuarios-routes
+        paths:
+          - /api/usuarios
+        strip_path: true
+
+  - name: vehiculos-service
+    host: vehiculos
+    port: 3001
+    protocol: http
+    routes:
+      - name: vehiculos-routes
+        paths:
+          - /api/vehiculos
+        strip_path: true
+
+  - name: zonas-service
+    host: zonas
+    port: 8080
+    protocol: http
+    routes:
+      - name: zonas-routes
+        paths:
+          - /api/v1/zonas
+          - /api/v1/espacios
+        strip_path: false
+
+  - name: api-docs-service
+    host: api-docs
+    port: 3100
+    protocol: http
+    routes:
+      - name: api-docs-routes
+        paths:
+          - /api/docs
+        strip_path: false
+  - name: asignaciones-service
+    host: asignaciones
+    port: 3002
+    protocol: http
+    routes:
+      - name: asignaciones-routes
+        paths:
+          - /api/asignaciones
+        strip_path: true

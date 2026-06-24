@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  postgres-db:
+    image: postgres:15
+    container_name: database-zonas
+    restart: always
+    environment:
+      POSTGRES_USER: kfamaguana
+      POSTGRES_PASSWORD: espe123
+      POSTGRES_DB: zonasDB
+    ports:
+      - "5434:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1GB
+volumes:
+  db_data:
